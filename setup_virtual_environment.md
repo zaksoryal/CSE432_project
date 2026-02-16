@@ -13,7 +13,7 @@ Open a terminal, navigate to the project folder, and run:
 python3 -m venv .venv
 
 # Activate it
-source .venv/bin/activate
+.\.venv\Scripts\Activate.ps1
 
 # Install project dependencies
 pip install -r requirements.txt
