@@ -1,130 +1,289 @@
 # Setting Up Your Virtual Environment
 
-This guide covers three ways to set up your Python environment for the SER project.
+## What is a virtual environment and why do we use it?
+
+A virtual environment is an **isolated Python installation** inside your project folder (typically `.venv/`). It has its own copy of `python`, `pip`, and every package you install.
+
+Why this matters:
+
+- **No conflicts.** Different projects can depend on different (even incompatible) versions of the same library. A virtual environment keeps each project's dependencies separate.
+- **Reproducibility.** Everyone working on the project installs exactly the packages listed in `requirements.txt` — nothing more, nothing less.
+- **Clean system.** Your OS-level Python stays untouched. If something breaks, just delete `.venv` and recreate it.
+
+In short: **always work inside a virtual environment** for this course.
 
 ---
 
-## Option 1 — Terminal (macOS / Linux)
+You may use any workflow you prefer:
 
-Open a terminal, navigate to the project folder, and run:
+1. **Terminal (recommended first choice)**
+2. **VS Code workflow**
+3. **Google Colab workflow**
+
+_NOTE: If you are on Windows, read the **Windows + WSL** section before starting._
+
+_NOTE: Before creating a new environment, if an old `.venv` setup failed, remove it and start clean. To remove a virtual environment, delete the `.venv` folder._
+
+I recommend the terminal workflow for simplicity and flexibility (You can use it in a bare server environment, on any OS, and it is the most direct way to learn how virtual environments work).
+VS Code is also a good option if you want an integrated experience. Google Colab is available if you want a cloud-based environment without local setup, but it has limitations.
+
+---
+
+## 1) Terminal Workflow (Recommended)
+
+This is the preferred workflow for the course.
+
+From the `SER_Project/` directory, run:
 
 ```bash
-# Create a virtual environment
+# Create virtual environment
 python3 -m venv .venv
 
 # Activate it
 .\.venv\Scripts\Activate.ps1
 
-# Install project dependencies
+# Install dependencies
 pip install -r requirements.txt
 
-# Download the RAVDESS dataset
+# (Optional) install any other package you need
+# pip install <package_name>
+pip install jupyterlab
+
+# Download dataset
 python download_data.py
 ```
 
-To deactivate later, simply run `deactivate`.
+### Launch Jupyter Lab directly
 
-### Windows Notes
+```bash
+# make sure the .venv is activated first
+jupyter lab
+```
 
-On Windows the activation command differs (e.g. `.venv\Scripts\activate` in Command Prompt, or `.venv\Scripts\Activate.ps1` in PowerShell). You may also need to:
+If `jupyter lab` is not found, install it in the active environment:
 
-- Allow script execution in PowerShell (`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`)
-- Check that `python` or `py` is on your PATH
+```bash
+pip install jupyterlab
+```
 
-If you're using WSL, follow the macOS/Linux instructions above instead.
+To deactivate your virtual environment (.venv) later:
 
-There are many environment-specific factors on Windows (antivirus, path conflicts, corporate policies, etc.) — you will need to troubleshoot for your own setup. The core steps (`python -m venv .venv` → activate → `pip install`) remain the same.
+```bash
+# Just use this command:
+deactivate
+```
+
+When `.venv` is activated, your shell automatically shows it, however the definitive check is:
+
+```shell
+which -a python
+which -a jupyter
+```
+
+and you should see the PATH for current `.venv`. For windows users you may use `where` instead of `which`.
 
 ---
 
-## Option 2 — VS Code
+## 2) VS Code Workflow
 
 ### Prerequisites
 
-Install the **Python** extension (by Microsoft) from the Extensions marketplace (`ms-python.python`). This provides virtual environment management and Jupyter support.
+- Install the **Python** extension (`ms-python.python`).
+- Install the **Jupyter** extension (`ms-toolsai.jupyter`).
 
-### Create the environment
+### Create and select environment
 
 1. Open the `SER_Project/` folder in VS Code.
-2. Open the Command Palette (`Cmd+Shift+P` on Mac, `Ctrl+Shift+P` on Windows/Linux).
-3. Type **"Python: Create Environment"** and select it.
-4. Choose **Venv**.
-5. Select your preferred Python interpreter (e.g. Python 3.10+).
-6. [optional] Check the box to install from `requirements.txt` when prompted.
-   1. later you can install packages using `pip install numpy pandas matplotlib ...`.
-7. VS Code will create a `.venv` folder and install the dependencies for you.
+2. Open Command Palette (`Cmd+Shift+P` on macOS, `Ctrl+Shift+P` on Windows/Linux).
+3. Run **Python: Create Environment**.
+4. Choose **Venv** and select Python 3.10+.
+5. Install from `requirements.txt` when prompted.
+6. Confirm interpreter via **Python: Select Interpreter** and choose `.venv`.
 
-### Select the environment
+VS Code often auto-detects `.venv` and handles interpreter selection automatically, but always verify the selected interpreter in the status bar.
 
-After creation, make sure the bottom-left status bar shows the `.venv` interpreter. If it doesn't:
+### VS Code installer for Windows users
 
-1. Open the Command Palette again.
-2. Type **"Python: Select Interpreter"**.
-3. Pick the `.venv` entry from the list.
+You **must** install VS Code using the **System Installer** (not the User Installer). The User Installer can cause PATH and permission issues.
 
-### Jupyter kernel note
+### Note on Jupyter notebooks in VS Code
 
-When you open a `.ipynb` notebook for the first time, VS Code may prompt you to install `ipykernel`. Accept the prompt — it is required to run notebook cells with your virtual environment. If you're not prompted, you can install it manually:
+When you open a `.ipynb` notebook, VS Code should prompt you to select a kernel. Choose the kernel associated with your `.venv` environment (it should be listed as something like `Python 3 ('.venv': venv)`).
 
-```bash
-pip install ipykernel
-```
-    note this pip is activated environment pip
+You can run Jupyter lab directly from VS Code terminal as well (see Section 1). However, if you have Jupyter extension installed, you can directly open notebooks and select the `.venv` kernel without needing to launch Jupyter Lab separately. Just make sure to select the correct interpreter (the one from `.venv`) in VS Code when you open a notebook. As a VS Code user, I assume you are familiar with how to select the Python interpreter and Jupyter kernel in VS Code, but if not, you can find those options in the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`) under **Python: Select Interpreter** and **Jupyter: Select Kernel** or for creating environment: **Python: Create environment**.
 
 ---
 
-## Option 3 — Google Colab
+## 3) Google Colab Workflow
 
-If you prefer to work in Google Colab, the runtime already has most packages pre-installed. The main extra step is getting the **dataset** into the Colab environment.
+Use this if you do not want to manage a local environment. Keep in mind this is a cloud runtime and not a full replacement for local project structure.
 
-### 1. Mount Google Drive
+### Mount Drive
 
-Run this cell at the top of your notebook:
+Mount Google Drive when you need files beyond your current notebook runtime (for example `pd.read_csv("a_csv_file.csv")`). Place files in a known path such as `data/file.csv`, then load from that mounted path.
 
 ```python
 from google.colab import drive
 drive.mount('/content/drive')
 ```
 
-Follow the authorization prompt and give full access.
+### Organize dataset in Drive
 
-### 2. Upload / organize the data
+Recommended layout:
 
-Upload the RAVDESS data into your Google Drive so it is accessible after mounting. A recommended layout:
-
-```
-My Drive/
+```text
+MyDrive/
 └── SER_Project/
-    └── data/
-        ├── Audio_Speech_Actors_01-24/
-        └── Audio_Song_Actors_01-24/
+  └── data/
+    ├── Audio_Speech_Actors_01-24/
+    └── Audio_Song_Actors_01-24/
 ```
 
-### 3. Set the data path
-
-Point your notebook to the mounted data directory:
+### Set data path
 
 ```python
 DATA_DIR = "/content/drive/MyDrive/SER_Project/data"
 ```
 
-Use this `DATA_DIR` variable wherever your code references the `data/` folder. You can also directly use the path `/cocntent/drive/MyDrive/SER_Project_data`.
-
-### 4. Install any missing packages
-
-If a package is not available in the Colab runtime, install it inline:
+### Install missing packages in Colab
 
 ```python
 !pip install librosa soundfile xgboost
 ```
 
-### 5. Upload project files (alternative to Drive)
+---
 
-For smaller files (scripts, the `minilearn/` package), you can also upload directly:
+## Troubleshooting: Notebook does not detect `.venv` kernel
 
-```python
-from google.colab import files
-uploaded = files.upload()  # opens a file picker
+Before troubleshooting, I have found many cases that resolve easily if you explictly run jupyter lab from .venv terminal (Install ipykernel if it's not installed). To do this:
+
+1. Make sure `.venv` is activated in your terminal.
+2. `.venv/bin/jupyter lab` (or `.\venv\Scripts\jupyter lab` on Windows).
+3. Open the notebook from the Jupyter Lab interface and select the kernel associated with `.venv`.
+   If this does not work, then step below helps to register the kernel explicitly.
+
+If you open a `.ipynb` notebook in **Jupyter Lab** or **VS Code** and your `.venv` environment is not listed as a kernel, follow these steps:
+
+### 1. Install `ipykernel` inside `.venv`
+
+Make sure your virtual environment is activated, then run:
+
+```bash
+pip install ipykernel
 ```
 
-However, for the audio dataset (~400 MB), Google Drive mounting is strongly recommended over direct upload.
+### 2. Register the kernel explicitly
+
+```bash
+python -m ipykernel install --user --name=ser_project --display-name "Python (SER Project)"
+jupyter kernelspec list
+```
+
+This registers your `.venv` Python as a Jupyter kernel that both Jupyter Lab and VS Code can discover.
+
+### 3. Refresh / restart
+
+- **Jupyter Lab:** Refresh the browser page, then open your notebook and select **Kernel → Change Kernel → Python (.venv)**.
+- **VS Code:** Reload the window (`Cmd+Shift+P` / `Ctrl+Shift+P` → **Developer: Reload Window**), open your notebook, click the kernel picker in the top-right corner, and select **Python (.venv)** (or the `.venv` interpreter).
+
+### 4. Verify
+
+Run this in a notebook cell to confirm the kernel is using the correct Python:
+
+```python
+import sys
+print(sys.executable)
+```
+
+The output should point to a path inside your `.venv` directory (e.g., `.venv/bin/python`).
+
+> **Tip:** If you ever delete and recreate `.venv`, you will need to repeat steps 1–2 because the old kernel registration points to a path that no longer exists.
+
+---
+
+## Windows Users (Read This First)
+
+I do **not** directly support native Windows development environments in this course.
+
+### Option A — Install WSL (Recommended)
+
+This is the easiest path. Once WSL is installed you can follow the **exact same Linux/macOS commands** in Sections 1–2 above.
+
+1. Open **PowerShell as Administrator** and run:
+
+   ```powershell
+   wsl --install -d Ubuntu
+   ```
+
+2. Restart your machine when prompted.
+3. Open **Windows Terminal** — you will now see an **Ubuntu** option in the drop-down menu. Select it.
+4. Create your Linux username and password when asked.
+
+You are now in a full Linux shell. Follow Section 1 (Terminal Workflow) exactly as written — `python3`, `source`, `pip`, etc. all work normally.
+
+If you use VS Code, open the project folder **from within WSL** so that `.venv` and kernels are detected correctly (e.g., run `code .` from the Ubuntu terminal inside the project directory).
+
+- NOTE: You may need to search on how to integrate WSL with VS Code if you have not used it before, but it is straightforward and well-documented by Microsoft.
+- **Performance tip:** For best performance, keep your project files inside the Linux filesystem (e.g., `~/projects/SER_Project/`) rather than under `/mnt/c/...`. Accessing Windows drives from WSL is noticeably slower.
+
+---
+
+### Option B — Native Windows Terminal / PowerShell
+
+If you prefer not to install WSL and want to use the default Windows terminal or PowerShell, read **all** of the notes below carefully.
+
+#### Activating the virtual environment
+
+Create the virtual environment the same way:
+
+```powershell
+python -m venv .venv
+```
+
+Activation differs from Linux/macOS:
+
+| Shell          | Command                      |
+| -------------- | ---------------------------- |
+| Command Prompt | `.venv\Scripts\activate`     |
+| PowerShell     | `.venv\Scripts\Activate.ps1` |
+
+> **Note:** On some Windows configurations the virtual-environment directory layout places binaries in `.venv\bin\` instead of `.venv\Scripts\`. If `.venv\Scripts\` does not exist, try `.venv\bin\activate` (or `.\bin\Activate.ps1`) instead. You can also check the contents of the `.venv` folder to see where the `activate` script is located.
+
+#### PowerShell execution policy
+
+PowerShell may block activation scripts by default. Allow them with:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+> **Important Note (PATH and Python toolchain issues):** Windows hides PATH configuration in various places (System Environment Variables, User Environment Variables, Windows Store Python aliases, etc.). If commands like `python`, `pip`, `urllib`, or other parts of the Python toolchain are not found — or if VS Code / the terminal does not reliably detect them — **it is your responsibility to locate and fix the PATH entries on your system.** Common things to check:
+>
+> - Make sure the **Windows Store Python app alias** is disabled (Settings → Apps → App execution aliases → turn off the `python.exe` / `python3.exe` entries).
+> - Verify that your Python installation directory (e.g., `C:\Users\<you>\AppData\Local\Programs\Python\Python3xx\` and its `Scripts\` subfolder) appears in your **User** or **System** `PATH`.
+> - After editing PATH, **restart** your terminal and VS Code for changes to take effect.
+> - VS Code and terminal shells sometimes cache old PATH values; restarting the application fully (not just the terminal tab) can resolve detection issues with `pip`, `python`, `urlopen`, etc.
+
+#### Run Jupyter lab or run python script:
+
+Assuming you have successfully activated the virtual environment, you can proceed with installing dependencies and running the project as normal. Just be aware that Windows may require additional troubleshooting for PATH and execution policies, which is why I recommend using WSL for a smoother experience.
+
+```powershell
+# .venv is activated at this point
+
+# Install dependencies for SER project
+pip install -r requirements.txt
+
+# install jupyterlab if you want to run it
+pip install jupyterlab
+
+# Run Jupyter Lab
+jupyter lab
+
+```
+
+At this point, the launched jupyter lab should detect the `.venv` environment as a kernel option. If it does not, you may need to install the `ipykernel` package in your virtual environment:
+
+```powershell
+pip install ipykernel
+```
