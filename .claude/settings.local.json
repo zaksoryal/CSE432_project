@@ -3,7 +3,9 @@
     "allow": [
       "Bash(git -C /c/Users/zacha/OneDrive/Documents/miami/cse432/Project_CSE432-532 log --oneline -20)",
       "Bash(git -C /c/Users/zacha/OneDrive/Documents/miami/cse432/Project_CSE432-532 log --graph --oneline --all -10)",
-      "Bash(du -sh /c/Users/zacha/OneDrive/Documents/miami/cse432/Project_CSE432-532/*)"
+      "Bash(du -sh /c/Users/zacha/OneDrive/Documents/miami/cse432/Project_CSE432-532/*)",
+      "Bash(.venv/Scripts/python.exe -c \"import sys; print\\(sys.version\\)\")",
+      "Bash(.venv/Scripts/python.exe -c \"import sys; sys.path.insert\\(0, ''SER_Project''\\); import feature_extraction; print\\(feature_extraction.__file__\\); print\\(dir\\(feature_extraction\\)\\)\")"
     ]
   }
 }
