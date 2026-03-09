@@ -25,3 +25,7 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+data/*.zip
+data/Audio_Song_Actors_01-24/
+data/Audio_Speech_Actors_01-24/
