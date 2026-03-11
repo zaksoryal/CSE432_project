@@ -5,7 +5,11 @@
       "Bash(git -C /c/Users/zacha/OneDrive/Documents/miami/cse432/Project_CSE432-532 log --graph --oneline --all -10)",
       "Bash(du -sh /c/Users/zacha/OneDrive/Documents/miami/cse432/Project_CSE432-532/*)",
       "Bash(.venv/Scripts/python.exe -c \"import sys; print\\(sys.version\\)\")",
-      "Bash(.venv/Scripts/python.exe -c \"import sys; sys.path.insert\\(0, ''SER_Project''\\); import feature_extraction; print\\(feature_extraction.__file__\\); print\\(dir\\(feature_extraction\\)\\)\")"
+      "Bash(.venv/Scripts/python.exe -c \"import sys; sys.path.insert\\(0, ''SER_Project''\\); import feature_extraction; print\\(feature_extraction.__file__\\); print\\(dir\\(feature_extraction\\)\\)\")",
+      "Bash(.venv/Scripts/python -m jupyter nbconvert --to notebook --execute --inplace \"SER_Project/notebooks/week6_regression.ipynb\" --ExecutePreprocessor.timeout=120)",
+      "Bash(.venv/Scripts/python -m nbconvert --to notebook --execute --inplace \"SER_Project/notebooks/week6_regression.ipynb\" --ExecutePreprocessor.timeout=120)",
+      "Bash(.venv/Scripts/pip install nbconvert -q)",
+      "Bash(.venv/Scripts/python -m nbconvert --to notebook --execute --inplace \"SER_Project/notebooks/week6_regression.ipynb\" --ExecutePreprocessor.timeout=180)"
     ]
   }
 }

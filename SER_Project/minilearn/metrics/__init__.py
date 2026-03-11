@@ -1,0 +1,33 @@
+"""
+minilearn.metrics
+=================
+Evaluation metrics for regression and classification, implemented from
+scratch using only NumPy.
+"""
+
+from .regression import mean_squared_error, root_mean_squared_error, mean_absolute_error, r2_score
+from .classification import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix,
+    classification_report,
+    k_fold_cv,
+)
+
+__all__ = [
+    # Regression
+    "mean_squared_error",
+    "root_mean_squared_error",
+    "mean_absolute_error",
+    "r2_score",
+    # Classification
+    "accuracy_score",
+    "precision_score",
+    "recall_score",
+    "f1_score",
+    "confusion_matrix",
+    "classification_report",
+    "k_fold_cv",
+]
